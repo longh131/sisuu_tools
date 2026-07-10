@@ -1,0 +1,9 @@
+{# Hero trust + rating — unified component, data-driven for future DB/config replacement #}
+{# Expects: hero_trust (dict with trust_text, rating_stars, rating_text) #}
+<div class="hero-trust-block">
+    <p class="hero-trust text-primary fw-medium mb-0">{{ hero_trust.trust_text }}</p>
+    <div class="hero-rating">
+        <div class="hero-rating-stars" aria-label="5 out of 5 stars">{{ hero_trust.rating_stars }}</div>
+        <p class="hero-rating-text text-secondary small mb-0">{{ hero_trust.rating_text }}</p>
+    </div>
+</div>

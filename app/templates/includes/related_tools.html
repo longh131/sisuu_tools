@@ -1,0 +1,13 @@
+{# Related tools section #}
+{% if related_tools %}
+<section class="section-py bg-light">
+    <div class="container">
+        <h2 class="h4 fw-bold mb-4">{{ section_title | default('Related Tools') }}</h2>
+        <div class="row g-4">
+            {% for tool in related_tools %}
+                {% include "includes/tool_card.html" %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}

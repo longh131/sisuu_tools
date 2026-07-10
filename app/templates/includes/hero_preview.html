@@ -1,0 +1,21 @@
+{# Hero tool preview mockup — rendered from seed data #}
+<div class="hero-preview">
+    <div class="hero-preview-card">
+        <div class="hero-preview-header">
+            <span class="hero-preview-dot"></span>
+            <span class="hero-preview-dot"></span>
+            <span class="hero-preview-dot"></span>
+        </div>
+        <div class="hero-preview-body">
+            {% for item in hero_preview_items %}
+            <div class="hero-preview-row">
+                <i data-lucide="{{ item.icon }}" class="icon-sm text-primary"></i>
+                <span>{{ item.name }}</span>
+            </div>
+            {% endfor %}
+            <div class="hero-preview-result">
+                <span class="text-success fw-semibold">{{ hero_preview_result }}</span>
+            </div>
+        </div>
+    </div>
+</div>

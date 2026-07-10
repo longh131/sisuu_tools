@@ -1,0 +1,75 @@
+{% extends "static_page.html" %}
+
+{% block page_body %}
+<p class="text-secondary mb-4">
+    Have a question, tool suggestion, or partnership inquiry? We'd love to hear from you.
+    Fill out the form below and we will respond within 2 business days.
+</p>
+
+{% if success %}
+<div class="alert alert-success" role="alert">
+    Thank you for your message. We have received your inquiry and will respond shortly.
+</div>
+{% endif %}
+
+{% if error %}
+<div class="alert alert-warning" role="alert">{{ error }}</div>
+{% endif %}
+
+<div class="row g-5">
+    <div class="col-lg-7">
+        <form method="post" action="/contact" class="contact-form" novalidate>
+            <div class="mb-3">
+                <label for="name" class="form-label fw-medium">Your Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="name" name="name"
+                       value="{{ form.name | default('') }}" required maxlength="100"
+                       placeholder="John Smith">
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label fw-medium">Email Address <span class="text-danger">*</span></label>
+                <input type="email" class="form-control" id="email" name="email"
+                       value="{{ form.email | default('') }}" required maxlength="200"
+                       placeholder="you@example.com">
+            </div>
+            <div class="mb-3">
+                <label for="subject" class="form-label fw-medium">Subject <span class="text-danger">*</span></label>
+                <select class="form-select" id="subject" name="subject" required>
+                    <option value="">Select a topic...</option>
+                    <option value="general" {% if form.subject == 'general' %}selected{% endif %}>General Inquiry</option>
+                    <option value="tool" {% if form.subject == 'tool' %}selected{% endif %}>Tool Suggestion</option>
+                    <option value="bug" {% if form.subject == 'bug' %}selected{% endif %}>Report a Bug</option>
+                    <option value="partnership" {% if form.subject == 'partnership' %}selected{% endif %}>Partnership</option>
+                    <option value="other" {% if form.subject == 'other' %}selected{% endif %}>Other</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="message" class="form-label fw-medium">Message <span class="text-danger">*</span></label>
+                <textarea class="form-control" id="message" name="message" rows="5"
+                          required maxlength="2000" placeholder="How can we help you?">{{ form.message | default('') }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary px-4">Send Message</button>
+        </form>
+    </div>
+    <div class="col-lg-5">
+        <div class="card border-0 bg-light p-4">
+            <h2 class="h6 fw-semibold mb-3">Contact Information</h2>
+            <dl class="mb-0">
+                <dt class="text-secondary small">Email</dt>
+                <dd class="mb-3"><a href="mailto:contact@sisuu.com">contact@sisuu.com</a></dd>
+                <dt class="text-secondary small">Website</dt>
+                <dd class="mb-3"><a href="https://sisuu.com">sisuu.com</a></dd>
+                <dt class="text-secondary small">Response Time</dt>
+                <dd class="mb-0">Within 2 business days</dd>
+            </dl>
+        </div>
+        <div class="card border-0 bg-light p-4 mt-3">
+            <h2 class="h6 fw-semibold mb-2">Before You Write</h2>
+            <p class="text-secondary small mb-0">
+                For tool usage questions, check our
+                <a href="/tools">Tool Center</a> and individual tool FAQ sections first.
+                Most answers are available instantly without waiting for a reply.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

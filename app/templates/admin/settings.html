@@ -1,0 +1,38 @@
+{% extends "admin/base.html" %}
+{% set active = "settings" %}
+{% block page_title %}系统设置{% endblock %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white fw-semibold">网站设置</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">网站名称</dt><dd class="col-sm-8">{{ app_name }}</dd>
+                    <dt class="col-sm-4">域名</dt><dd class="col-sm-8">{{ domain }}</dd>
+                    <dt class="col-sm-4">调试模式</dt><dd class="col-sm-8">{{ "开启" if debug else "关闭" }}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white fw-semibold">AI 设置</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">DeepSeek API</dt>
+                    <dd class="col-sm-8">
+                        {% if has_ai_key %}
+                        <span class="badge bg-success">已配置</span>
+                        {% else %}
+                        <span class="badge bg-warning">未配置</span>
+                        <small class="text-muted d-block mt-1">请在 .env 中设置 DEEPSEEK_API_KEY</small>
+                        {% endif %}
+                    </dd>
+                    <dt class="col-sm-4">模型</dt><dd class="col-sm-8">deepseek-chat</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

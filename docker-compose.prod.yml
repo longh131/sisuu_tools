@@ -1,0 +1,20 @@
+# Production override
+# Usage: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+#
+# Prerequisites:
+#   1. DNS A records: sisuu.com + www.sisuu.com -> server IP
+#   2. Let's Encrypt certs at /etc/letsencrypt/live/sisuu.com/
+#   3. .env configured with production secrets
+
+services:
+  db:
+    ports: []   # do not expose MySQL publicly in production
+
+  nginx:
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      - ./app/static:/app/static:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro

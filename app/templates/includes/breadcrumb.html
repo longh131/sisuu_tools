@@ -1,0 +1,12 @@
+{# Breadcrumb navigation component #}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        {% for crumb in breadcrumbs %}
+        {% if crumb.url and not loop.last %}
+        <li class="breadcrumb-item"><a href="{{ crumb.url }}">{{ crumb.name }}</a></li>
+        {% else %}
+        <li class="breadcrumb-item active" aria-current="page">{{ crumb.name }}</li>
+        {% endif %}
+        {% endfor %}
+    </ol>
+</nav>

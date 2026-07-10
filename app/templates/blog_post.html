@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block og_type %}article{% endblock %}
+{% block og_title %}{{ post.seo_title or post.title }}{% endblock %}
+{% block og_description %}{{ post.seo_description or post.summary }}{% endblock %}
+
+{% block extra_head %}
+<meta name="robots" content="index, follow">
+{% if schema_article %}<script type="application/ld+json">{{ schema_article | safe }}</script>{% endif %}
+{% if schema_breadcrumb %}<script type="application/ld+json">{{ schema_breadcrumb | safe }}</script>{% endif %}
+{% endblock %}
+
+{% block content %}
+<article class="section-py bg-white">
+    <div class="container">
+        {% include "includes/breadcrumb.html" %}
+        {% if post.category %}
+        <span class="badge bg-primary-subtle text-primary mb-3">{{ post.category }}</span>
+        {% endif %}
+        <h1 class="section-title fw-bold mb-3">{{ post.title }}</h1>
+        {% if post.published_date %}
+        <p class="text-muted small mb-3">Published: {{ post.published_date }}</p>
+        {% endif %}
+        <p class="text-secondary lead mb-4">{{ post.summary }}</p>
+        <div class="blog-content">
+            {{ post.content | safe }}
+        </div>
+        <div class="mt-5 pt-4 border-top">
+            <a href="/blog" class="btn btn-outline-primary">← Back to Blog</a>
+        </div>
+    </div>
+</article>
+
+{% include "includes/related_posts.html" %}
+{% endblock %}

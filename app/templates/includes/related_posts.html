@@ -1,0 +1,27 @@
+{# Related blog articles — 3-5 internal links per SEO spec #}
+{% if related_posts %}
+<section class="section-py bg-light">
+    <div class="container">
+        <h2 class="h4 fw-bold mb-4">Related Articles</h2>
+        <div class="row g-4">
+            {% for post in related_posts %}
+            <div class="col-md-6 col-lg-4">
+                <article class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        {% if post.category %}
+                        <span class="badge bg-primary-subtle text-primary mb-2">{{ post.category }}</span>
+                        {% endif %}
+                        <h3 class="h6 fw-semibold">
+                            <a href="/blog/{{ post.slug }}" class="text-decoration-none text-dark stretched-link">
+                                {{ post.title }}
+                            </a>
+                        </h3>
+                        <p class="text-secondary small mb-0">{{ post.summary }}</p>
+                    </div>
+                </article>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}

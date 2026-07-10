@@ -1,0 +1,12 @@
+{# Category tabs — static URLs per docs/06 #}
+<ul class="nav nav-pills category-tabs flex-wrap gap-2 mb-4">
+    <li class="nav-item">
+        <a class="nav-link {% if not active_category %}active{% endif %}" href="/tools">All Tools</a>
+    </li>
+    {% for cat in categories %}
+    <li class="nav-item">
+        <a class="nav-link {% if active_category == cat.slug %}active{% endif %}"
+           href="/tools/{{ cat.slug }}">{{ cat.name }}</a>
+    </li>
+    {% endfor %}
+</ul>

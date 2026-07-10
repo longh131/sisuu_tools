@@ -1,0 +1,13 @@
+{# Unified tools grid section — data-driven, no hardcoded tool HTML #}
+{# Expects: section_id, section_title, section_description, tools #}
+<section id="{{ section_id }}" class="section-py {{ section_bg | default('bg-white') }}">
+    <div class="container">
+        <h2 class="section-title fw-bold mb-2">{{ section_title }}</h2>
+        <p class="text-secondary mb-4">{{ section_description }}</p>
+        <div class="row g-4">
+            {% for tool in tools %}
+                {% include "includes/tool_card.html" %}
+            {% endfor %}
+        </div>
+    </div>
+</section>

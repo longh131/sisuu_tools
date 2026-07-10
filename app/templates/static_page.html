@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+{% if schema_breadcrumb %}
+<script type="application/ld+json">{{ schema_breadcrumb | safe }}</script>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="section-py bg-white">
+    <div class="container">
+        {% include "includes/breadcrumb.html" %}
+
+        <h1 class="section-title fw-bold mb-3">{{ page_h1 }}</h1>
+
+        {% if last_updated %}
+        <p class="text-muted small mb-4">Last updated: {{ last_updated }}</p>
+        {% endif %}
+
+        <div class="page-content">
+            {% block page_body %}{% endblock %}
+        </div>
+    </div>
+</section>
+{% endblock %}

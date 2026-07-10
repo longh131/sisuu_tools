@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+{% if schema_software %}<script type="application/ld+json">{{ schema_software | safe }}</script>{% endif %}
+{% if schema_faq %}<script type="application/ld+json">{{ schema_faq | safe }}</script>{% endif %}
+{% if schema_breadcrumb %}<script type="application/ld+json">{{ schema_breadcrumb | safe }}</script>{% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="section-py bg-white">
+    <div class="container">
+        {% include "includes/breadcrumb.html" %}
+
+        <div class="row g-5">
+            <div class="col-lg-8">
+                <h1 class="section-title fw-bold mb-2">{{ tool.name }}</h1>
+                <p class="text-secondary mb-4">{{ tool.intro or tool.description }}</p>
+
+                {% include "includes/tool_form.html" %}
+            </div>
+            <div class="col-lg-4">
+                <div class="card p-3 bg-light border-0">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <i data-lucide="{{ tool.icon }}" class="icon-md text-primary"></i>
+                        {% if tool.is_ai %}<span class="badge bg-primary">AI Tool</span>{% endif %}
+                        <span class="badge bg-success">Free</span>
+                    </div>
+                    <p class="small text-secondary mb-0">{{ tool.description }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# How It Works #}
+{% if config.how_it_works %}
+<section class="section-py bg-light">
+    <div class="container">
+        <h2 class="h4 fw-bold mb-4">How It Works</h2>
+        <div class="row g-4">
+            {% for step in config.how_it_works %}
+            <div class="col-md-4">
+                <div class="text-center">
+                    <div class="how-step-number mb-2">{{ step.step }}</div>
+                    <h3 class="h6 fw-semibold">{{ step.title }}</h3>
+                    <p class="text-secondary small">{{ step.description }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% set section_bg = "bg-white" %}
+{% include "includes/faq_section.html" %}
+
+{% set section_title = "Related Tools" %}
+{% include "includes/related_tools.html" %}
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ static_url('js/tool.js') }}" defer></script>
+{% endblock %}

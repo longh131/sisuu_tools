@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+{# Organization + Website + SearchAction Schema #}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "Organization",
+            "name": {{ app_name | tojson }},
+            "url": {{ site_url | tojson }},
+            "logo": {{ (site_url + "/static/icons/favicon.svg") | tojson }}
+        },
+        {
+            "@type": "WebSite",
+            "name": {{ app_name | tojson }},
+            "url": {{ site_url | tojson }},
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": {
+                    "@type": "EntryPoint",
+                    "urlTemplate": {{ (site_url + "/search?q={search_term_string}") | tojson }}
+                },
+                "query-input": "required name=search_term_string"
+            }
+        },
+        {
+            "@type": "FAQPage",
+            "mainEntity": [
+                {% for item in faq_items %}
+                {
+                    "@type": "Question",
+                    "name": {{ item.question | tojson }},
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": {{ item.answer | tojson }}
+                    }
+                }{% if not loop.last %},{% endif %}
+                {% endfor %}
+            ]
+        }
+    ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
+
+{# ── Hero Section ── #}
+<section class="hero-section py-5">
+    <div class="container py-4">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <p class="hero-trust text-primary fw-medium mb-2">{{ hero_trust.trust_text }}</p>
+                <h1 class="hero-title fw-bold mb-3">
+                    Free Seller Tools for Amazon, eBay, Shopify &amp; Walmart Sellers
+                </h1>
+                <p class="hero-subtitle text-secondary mb-2">
+                    Everything you need to grow your eCommerce business.
+                </p>
+                <p class="text-secondary mb-4">
+                    AI Tools, Calculators, Policy Center and Seller Resources.
+                </p>
+
+                <div class="mb-4" style="max-width: 420px;">
+                    {% include "includes/search_box.html" %}
+                </div>
+
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="/tools" class="btn btn-primary px-4">Explore Tools</a>
+                    <a href="#popular-tools" class="btn btn-outline-primary px-4">Popular Tools</a>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                {% include "includes/hero_preview.html" %}
+            </div>
+        </div>
+
+        {# Trust + rating — unified component below Hero content #}
+        <div class="row mt-4">
+            <div class="col-12">
+                {% include "includes/hero_trust.html" %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{# ── Popular Tools (unified data-driven component) ── #}
+{% set section_id = "popular-tools" %}
+{% set section_title = "Popular Tools" %}
+{% set section_description = "Most used tools by eCommerce sellers worldwide." %}
+{% set tools = popular_tools %}
+{% set section_bg = "bg-white" %}
+{% include "includes/tools_section.html" %}
+
+{# ── Tool Categories ── #}
+<section class="section-py bg-light">
+    <div class="container">
+        <h2 class="section-title fw-bold mb-2">Tool Categories</h2>
+        <p class="text-secondary mb-4">Browse tools by category to find what you need.</p>
+        <div class="row g-4">
+            {% for category in tool_categories %}
+                {% include "includes/category_card.html" %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# ── Why Choose Seller Toolkit ── #}
+<section class="section-py bg-white">
+    <div class="container">
+        <h2 class="section-title fw-bold mb-2 text-center">Why Choose Seller Toolkit</h2>
+        <p class="text-secondary mb-5 text-center">Built for sellers who need fast, reliable tools.</p>
+        <div class="row g-4">
+            {% for item in why_choose_items %}
+            <div class="col-md-6 col-lg-3">
+                <div class="text-center px-3">
+                    <div class="why-icon mb-3">
+                        <i data-lucide="{{ item.icon }}" class="icon-lg text-primary"></i>
+                    </div>
+                    <h3 class="h5 fw-semibold">{{ item.title }}</h3>
+                    <p class="text-secondary small">{{ item.description }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{# ── Latest Tools (unified data-driven component) ── #}
+{% set section_id = "latest-tools" %}
+{% set section_title = "Latest Tools" %}
+{% set section_description = "Recently added tools to help you sell smarter." %}
+{% set tools = latest_tools %}
+{% set section_bg = "bg-light" %}
+{% include "includes/tools_section.html" %}
+
+{# ── FAQ ── #}
+<section class="section-py bg-white">
+    <div class="container">
+        <h2 class="section-title fw-bold mb-4">Frequently Asked Questions</h2>
+        <div class="accordion" id="faqAccordion">
+            {% for item in faq_items %}
+                {% set faq_index = loop.index %}
+                {% set faq_first = loop.first %}
+                {% include "includes/faq_item.html" %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}

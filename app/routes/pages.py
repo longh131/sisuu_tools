@@ -1,0 +1,140 @@
+"""Static content pages — Sprint 7 full pages."""
+
+from fastapi import APIRouter, Form, Query, Request
+from fastapi.responses import HTMLResponse, RedirectResponse
+
+from app.data.static_pages import ABOUT_PAGE, CONTACT_PAGE, PRIVACY_PAGE, TERMS_PAGE
+from app.services.contact_service import save_contact_message, validate_contact_form
+from app.services.tools_service import search_tools
+from app.utils.seo import breadcrumb_schema
+from app.utils.templates import base_context, templates
+
+router = APIRouter(tags=["pages"])
+
+
+def _static_context(page_meta: dict, **extra) -> dict:
+    """Build template context for static pages with SEO and breadcrumb."""
+    ctx = base_context()
+    crumbs = page_meta.get("breadcrumb", [])
+    return {
+        **ctx,
+        "page_title": page_meta["title"],
+        "page_description": page_meta["description"],
+        "canonical_url": ctx["site_url"] + "/" + extra.get("slug", ""),
+        "page_h1": page_meta["h1"],
+        "breadcrumbs": crumbs,
+        "schema_breadcrumb": breadcrumb_schema(crumbs, ctx["site_url"]),
+        "last_updated": page_meta.get("last_updated"),
+        **extra,
+    }
+
+
+@router.get("/about", response_class=HTMLResponse)
+async def about(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(
+        request=request, name="about.html",
+        context=_static_context(ABOUT_PAGE, slug="about"),
+    )
+
+
+@router.get("/contact", response_class=HTMLResponse)
+async def contact_page(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(
+        request=request, name="contact.html",
+        context={**_static_context(CONTACT_PAGE, slug="contact"), "success": False, "error": None, "form": {}},
+    )
+
+
+@router.post("/contact", response_class=HTMLResponse)
+async def contact_submit(
+    request: Request,
+    name: str = Form(""),
+    email: str = Form(""),
+    subject: str = Form(""),
+    message: str = Form(""),
+) -> HTMLResponse:
+    """Handle contact form submission with validation."""
+    form_data = {"name": name, "email": email, "subject": subject, "message": message}
+    error = validate_contact_form(name, email, subject, message)
+
+    base = _static_context(CONTACT_PAGE, slug="contact")
+
+    if error:
+        return templates.TemplateResponse(
+            request=request, name="contact.html",
+            context={**base, "success": False, "error": error, "form": form_data},
+            status_code=400,
+        )
+
+    save_contact_message(name.strip(), email.strip(), subject.strip(), message.strip())
+    return templates.TemplateResponse(
+        request=request, name="contact.html",
+        context={**base, "success": True, "error": None, "form": {}},
+    )
+
+
+@router.get("/privacy", response_class=HTMLResponse)
+async def privacy(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(
+        request=request, name="privacy.html",
+        context=_static_context(PRIVACY_PAGE, slug="privacy"),
+    )
+
+
+@router.get("/terms", response_class=HTMLResponse)
+async def terms(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(
+        request=request, name="terms.html",
+        context=_static_context(TERMS_PAGE, slug="terms"),
+    )
+
+
+# ── Other pages (unchanged from Sprint 3) ──
+
+_PRICING = {
+    "h1": "Pricing", "title": "Pricing — Seller Toolkit",
+    "description": "Seller Toolkit pricing. Most tools are free.",
+    "content": (
+        "<p><strong>Free Plan</strong> — Most calculators and tools at no cost.</p>"
+        "<p><strong>AI Tools</strong> — Free daily usage with optional packages coming soon.</p>"
+    ),
+}
+
+
+@router.get("/pricing", response_class=HTMLResponse)
+async def pricing(request: Request) -> HTMLResponse:
+    ctx = base_context()
+    return templates.TemplateResponse(request=request, name="page.html", context={
+        **ctx, "page_title": _PRICING["title"], "page_description": _PRICING["description"],
+        "canonical_url": ctx["site_url"] + "/pricing", "page_h1": _PRICING["h1"],
+        "page_content": _PRICING["content"],
+    })
+
+
+@router.get("/policy", response_class=HTMLResponse)
+async def policy_page(request: Request) -> HTMLResponse:
+    ctx = base_context()
+    return templates.TemplateResponse(request=request, name="page.html", context={
+        **ctx, "page_title": "Policy Center — Seller Toolkit",
+        "page_description": "Platform policies for Amazon, eBay, Walmart and TikTok Shop sellers.",
+        "canonical_url": ctx["site_url"] + "/policy", "page_h1": "Policy Center",
+        "page_content": '<p><a href="/tools/policy">Browse Policy Tools</a></p>',
+    })
+
+
+@router.get("/resources")
+async def resources() -> RedirectResponse:
+    return RedirectResponse(url="/tools/seller-resources", status_code=301)
+
+
+@router.get("/search", response_class=HTMLResponse)
+async def search(request: Request, q: str | None = Query(None)) -> HTMLResponse:
+    from app.routes.tools import _render_tools_page
+    return _render_tools_page(
+        request,
+        page_h1="Search Results" if q else "Search Tools",
+        page_intro=f'Showing results for "{q}"' if q else "Enter a keyword to find seller tools.",
+        tools=search_tools(q or ""),
+        page=1,
+        page_title=f"Search: {q or 'Tools'} — Seller Toolkit",
+    )

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+{% if schema_faq %}<script type="application/ld+json">{{ schema_faq | safe }}</script>{% endif %}
+{% if schema_breadcrumb %}<script type="application/ld+json">{{ schema_breadcrumb | safe }}</script>{% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="section-py bg-white">
+    <div class="container">
+        {% include "includes/breadcrumb.html" %}
+
+        <h1 class="section-title fw-bold mb-2">{{ page_h1 }}</h1>
+        <p class="text-secondary mb-4">{{ page_intro }}</p>
+
+        <div class="mb-4" style="max-width: 480px;">
+            {% include "includes/search_box.html" %}
+        </div>
+
+        {% include "includes/category_tabs.html" %}
+
+        {% if tools %}
+        <div class="row g-4">
+            {% for tool in tools %}
+                {% include "includes/tool_card.html" %}
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5 text-secondary">
+            <p>No tools found. Try a different category or search term.</p>
+            <a href="/tools" class="btn btn-primary">View All Tools</a>
+        </div>
+        {% endif %}
+
+        {% include "includes/pagination.html" %}
+    </div>
+</section>
+
+{% set related_tools = related_tools %}
+{% set section_title = "Popular Tools" %}
+{% include "includes/related_tools.html" %}
+
+{% set section_bg = "bg-white" %}
+{% include "includes/faq_section.html" %}
+{% endblock %}

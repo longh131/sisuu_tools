@@ -1,0 +1,15 @@
+{# FAQ section with accordion #}
+{% if faqs %}
+<section class="section-py {% if section_bg %}{{ section_bg }}{% else %}bg-white{% endif %}">
+    <div class="container">
+        <h2 class="h4 fw-bold mb-4">{{ section_title | default('Frequently Asked Questions') }}</h2>
+        <div class="accordion" id="faqAccordion">
+            {% for item in faqs %}
+                {% set faq_index = loop.index %}
+                {% set faq_first = loop.first %}
+                {% include "includes/faq_item.html" %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}

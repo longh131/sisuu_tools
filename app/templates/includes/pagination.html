@@ -1,0 +1,30 @@
+{# Pagination — static URLs per docs/06 #}
+{% if pagination and pagination.total_pages > 1 %}
+<nav aria-label="Tool pagination" class="mt-5">
+    <ul class="pagination justify-content-center">
+        <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+            {% if active_category %}
+            <a class="page-link" href="/tools/{{ active_category }}{% if pagination.page > 2 %}/page/{{ pagination.page - 1 }}{% endif %}">Previous</a>
+            {% else %}
+            <a class="page-link" href="/tools{% if pagination.page > 2 %}/page/{{ pagination.page - 1 }}{% endif %}">Previous</a>
+            {% endif %}
+        </li>
+        {% for p in range(1, pagination.total_pages + 1) %}
+        <li class="page-item {% if p == pagination.page %}active{% endif %}">
+            {% if active_category %}
+            <a class="page-link" href="/tools/{{ active_category }}{% if p > 1 %}/page/{{ p }}{% endif %}">{{ p }}</a>
+            {% else %}
+            <a class="page-link" href="/tools{% if p > 1 %}/page/{{ p }}{% endif %}">{{ p }}</a>
+            {% endif %}
+        </li>
+        {% endfor %}
+        <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+            {% if active_category %}
+            <a class="page-link" href="/tools/{{ active_category }}/page/{{ pagination.page + 1 }}">Next</a>
+            {% else %}
+            <a class="page-link" href="/tools/page/{{ pagination.page + 1 }}">Next</a>
+            {% endif %}
+        </li>
+    </ul>
+</nav>
+{% endif %}

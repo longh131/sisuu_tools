@@ -200,7 +200,7 @@ CSS、JS 最小化。
 * requirements.txt
 * README.md
 * nginx 配置
-* SQLite 初始化
+* MySQL 8 初始化
 * 基础数据
 * 所有 HTML 模板
 * CSS

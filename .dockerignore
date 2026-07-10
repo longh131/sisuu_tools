@@ -1,0 +1,38 @@
+# Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Environment & secrets
+.env
+.env.local
+
+# Git & IDE
+.git/
+.gitignore
+.cursor/
+.vscode/
+*.swp
+
+# Logs & temp
+logs/
+*.log
+lighthouse*.json
+
+# Docs (not needed in image)
+docs/
+agent-transcripts/
+
+# Dev-only
+terminals/
+start-dev.bat
+scripts/lighthouse-audit.bat
+index.html
+
+# OS
+Thumbs.db
+.DS_Store

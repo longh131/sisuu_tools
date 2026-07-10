@@ -1,0 +1,20 @@
+{# Reusable FAQ accordion item — expects: item, faq_index, faq_first #}
+<div class="accordion-item">
+    <h3 class="accordion-header" id="faq-heading-{{ faq_index }}">
+        <button class="accordion-button {% if not faq_first %}collapsed{% endif %}"
+                type="button" data-bs-toggle="collapse"
+                data-bs-target="#faq-collapse-{{ faq_index }}"
+                aria-expanded="{{ 'true' if faq_first else 'false' }}"
+                aria-controls="faq-collapse-{{ faq_index }}">
+            {{ item.question }}
+        </button>
+    </h3>
+    <div id="faq-collapse-{{ faq_index }}"
+         class="accordion-collapse collapse {% if faq_first %}show{% endif %}"
+         aria-labelledby="faq-heading-{{ faq_index }}"
+         data-bs-parent="#faqAccordion">
+        <div class="accordion-body text-secondary">
+            {{ item.answer }}
+        </div>
+    </div>
+</div>

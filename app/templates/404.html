@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block robots %}noindex, follow{% endblock %}
+{% block content %}
+<section class="section-py bg-white text-center">
+    <div class="container py-5">
+        <p class="display-1 fw-bold text-primary mb-0" aria-hidden="true">404</p>
+        <h1 class="h4 fw-semibold mb-3">Page Not Found</h1>
+        <p class="text-secondary mb-4">The page you are looking for does not exist or has been moved.</p>
+        <a href="/" class="btn btn-primary me-2">Go Home</a>
+        <a href="/tools" class="btn btn-outline-primary">Browse Tools</a>
+    </div>
+</section>
+{% endblock %}
