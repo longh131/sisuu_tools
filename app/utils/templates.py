@@ -31,4 +31,5 @@ def base_context() -> dict:
         "static_version": STATIC_VERSION,
         "og_image_url": og_image_url(),
         "cdn": CDN_ASSETS,
+        "ga_measurement_id": settings.ga_measurement_id,
     }

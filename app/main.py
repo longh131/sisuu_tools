@@ -15,6 +15,7 @@ from app.routes.admin import router as admin_router
 from app.routes.api import router as api_router
 from app.routes.blog import router as blog_router
 from app.routes.home import router as home_router
+from app.routes.leads import router as leads_router
 from app.routes.pages import router as pages_router
 from app.routes.seo import router as seo_router
 from app.routes.tools import router as tools_router
@@ -61,6 +62,7 @@ app.include_router(home_router)
 app.include_router(tools_router)
 app.include_router(blog_router)
 app.include_router(pages_router)
+app.include_router(leads_router)
 app.include_router(api_router)
 app.include_router(admin_router)
 app.include_router(seo_router)

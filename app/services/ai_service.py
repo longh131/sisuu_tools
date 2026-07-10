@@ -6,6 +6,7 @@ API Key loaded from .env — never hardcoded.
 import httpx
 
 from app.config import get_settings
+from app.data.ai_prompts import AI_TOOL_PROMPTS
 
 settings = get_settings()
 
@@ -45,33 +46,10 @@ async def generate_text(prompt: str, system: str = "") -> str:
         return f"AI generation failed. Please try again later. ({type(exc).__name__})"
 
 
-async def generate_review_reply(review_text: str, product_name: str, tone: str) -> str:
-    """Generate a professional review reply."""
-    system = (
-        "You are a professional eCommerce customer service expert. "
-        "Write empathetic, professional replies to negative customer reviews. "
-        "Keep replies concise (under 150 words). Never be defensive."
-    )
-    prompt = (
-        f"Write a {tone} reply to this negative review"
-        f"{f' for product: {product_name}' if product_name else ''}:\n\n"
-        f'"{review_text}"'
-    )
-    return await generate_text(prompt, system)
-
-
-async def generate_product_description(
-    product_name: str, features: str, platform: str, tone: str
-) -> str:
-    """Generate a product description."""
-    system = (
-        f"You are an expert {platform} listing copywriter. "
-        "Write SEO-optimized product descriptions. "
-        "Use bullet points for features. Keep under 300 words."
-    )
-    prompt = (
-        f"Write a {tone} product description for {platform}.\n"
-        f"Product: {product_name}\n"
-        f"Features: {features}"
-    )
-    return await generate_text(prompt, system)
+async def run_ai_tool(slug: str, data: dict) -> str:
+    """Run any registered AI tool by slug."""
+    config = AI_TOOL_PROMPTS.get(slug)
+    if not config:
+        raise ValueError(f"No AI prompt configured for: {slug}")
+    prompt = config["build_prompt"](data)
+    return await generate_text(prompt, config["system"])

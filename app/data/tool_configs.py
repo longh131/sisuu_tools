@@ -193,6 +193,13 @@ TOOL_CONFIGS: dict[str, dict] = {
     },
 }
 
+# Merge commercial-phase configs
+from app.data.ai_tool_configs import AI_TOOL_CONFIGS  # noqa: E402
+from app.data.marketplace_calc_configs import MARKETPLACE_CALC_CONFIGS  # noqa: E402
+
+TOOL_CONFIGS.update(AI_TOOL_CONFIGS)
+TOOL_CONFIGS.update(MARKETPLACE_CALC_CONFIGS)
+
 
 def get_tool_config(slug: str) -> dict | None:
     """Return tool page config by slug."""

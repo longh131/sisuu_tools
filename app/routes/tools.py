@@ -18,6 +18,7 @@ from app.services.tools_service import (
     paginate_tools,
     search_tools,
 )
+from app.services.usage_service import check_ai_limit
 from app.utils.seo import breadcrumb_schema, faq_schema, software_app_schema
 from app.utils.templates import base_context, templates
 
@@ -175,5 +176,6 @@ async def tool_or_category(request: Request, slug: str) -> HTMLResponse:
             {"name": cat["name"] if cat else "Tools", "url": f"/tools/{tool.get('category', '')}"},
             {"name": tool["name"], "url": ""},
         ], ctx["site_url"]),
+        "usage_status": check_ai_limit(request) if tool.get("is_ai") else None,
     }
     return templates.TemplateResponse(request=request, name="tool.html", context=context)

@@ -322,6 +322,37 @@ body {
     box-shadow: none;
 }
 
+/* ── Pricing (commercial) ── */
+.pricing-card {
+    border-radius: var(--card-radius);
+    transition: transform 0.2s ease;
+}
+.pricing-card-featured {
+    transform: scale(1.02);
+}
+.pricing-badge {
+    background: var(--color-primary);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: center;
+    padding: 0.35rem;
+    border-radius: var(--card-radius) var(--card-radius) 0 0;
+    margin: -1px -1px 0;
+}
+.pricing-price .display-6 {
+    color: var(--color-secondary);
+}
+.pricing-features li {
+    line-height: 1.5;
+}
+
+/* ── Email capture ── */
+.email-capture-compact .form-control {
+    min-height: 44px;
+    border-radius: var(--btn-radius);
+}
+
 .blog-content h2 { font-size: 1.25rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.75rem; }
 .blog-content p { color: var(--color-secondary); line-height: 1.7; }
 .blog-content a { color: var(--color-primary); }

@@ -71,6 +71,13 @@
                     <a href="/tools" class="btn btn-primary px-4">Explore Tools</a>
                     <a href="#popular-tools" class="btn btn-outline-primary px-4">Popular Tools</a>
                 </div>
+
+                <div class="mt-4 p-3 bg-light rounded" style="max-width: 480px;">
+                    <p class="small fw-medium mb-2">Get 10 free AI uses per day</p>
+                    {% with source="hero", compact=true, placeholder="Your email", button_text="Subscribe Free" %}
+                    {% include "includes/email_capture.html" %}
+                    {% endwith %}
+                </div>
             </div>
 
             <div class="col-lg-6">

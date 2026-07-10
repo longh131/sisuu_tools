@@ -8,7 +8,7 @@ from app.config import get_settings
 settings = get_settings()
 
 # Bump on each release to invalidate browser cache
-STATIC_VERSION = "1.0.1"
+STATIC_VERSION = "1.1.0"
 
 # Self-hosted vendor assets (Sprint 8 — no external CDN for core resources)
 CDN_ASSETS: dict[str, str] = {

@@ -15,14 +15,15 @@
         var loading = document.getElementById('toolLoading');
         var loadingText = document.getElementById('toolLoadingText');
         var submitBtn = document.getElementById('toolSubmitBtn');
+        var postCta = document.getElementById('toolPostCta');
+        var usageBadge = document.getElementById('usageBadge');
 
         form.addEventListener('submit', function (e) {
             e.preventDefault();
             if (submitBtn.disabled) return;
 
             var data = {};
-            var inputs = form.querySelectorAll('input, select, textarea');
-            inputs.forEach(function (el) {
+            form.querySelectorAll('input, select, textarea').forEach(function (el) {
                 if (el.name) data[el.name] = el.value;
             });
 
@@ -36,15 +37,24 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             })
-            .then(function (res) { return res.json(); })
-            .then(function (json) {
+            .then(function (res) { return res.json().then(function (j) { return { ok: res.ok, json: j }; }); })
+            .then(function (r) {
                 loading.classList.add('d-none');
                 submitBtn.disabled = false;
+                var json = r.json;
                 if (!json.success) {
                     showError(json.error || 'An error occurred. Please try again.');
+                    if (json.limit_reached && postCta) postCta.classList.remove('d-none');
                     return;
                 }
                 showResult(json.result, toolType);
+                if (toolType === 'ai') {
+                    if (postCta) postCta.classList.remove('d-none');
+                    if (json.usage && usageBadge) updateUsageBadge(json.usage);
+                    if (typeof gtag === 'function') gtag('event', 'tool_use', { tool_slug: slug, tool_type: 'ai' });
+                } else if (typeof gtag === 'function') {
+                    gtag('event', 'tool_use', { tool_slug: slug, tool_type: 'calculator' });
+                }
             })
             .catch(function () {
                 loading.classList.add('d-none');
@@ -52,6 +62,11 @@
                 showError('Network error. Please check your connection and try again.');
             });
         });
+
+        function updateUsageBadge(usage) {
+            var limit = usage.limit > 0 ? usage.limit : '∞';
+            usageBadge.innerHTML = 'AI uses today: <strong>' + usage.used + '</strong> / ' + limit;
+        }
 
         function showResult(result, type) {
             resultBox.classList.remove('d-none');
@@ -81,8 +96,7 @@
         var copyBtn = document.getElementById('copyResultBtn');
         if (copyBtn) {
             copyBtn.addEventListener('click', function () {
-                var text = resultContent.innerText;
-                navigator.clipboard.writeText(text).then(function () {
+                navigator.clipboard.writeText(resultContent.innerText).then(function () {
                     copyBtn.textContent = 'Copied!';
                     setTimeout(function () { copyBtn.textContent = 'Copy'; }, 2000);
                 });
@@ -98,7 +112,7 @@
         }
 
         function escapeHtml(str) {
-            return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+            return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
         }
 
         function formatKey(key) {

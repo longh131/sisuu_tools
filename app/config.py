@@ -38,6 +38,13 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     log_dir: str = "logs"
 
+    # Usage limits (overridable via .env)
+    guest_ai_daily_limit: int = 3
+    registered_ai_daily_limit: int = 10
+
+    # Analytics — Google Analytics 4 (leave empty to disable)
+    ga_measurement_id: str = ""
+
     @property
     def site_url(self) -> str:
         """Canonical site URL used for SEO meta tags."""

@@ -3,10 +3,11 @@
 from fastapi import APIRouter, Form, Query, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 
+from app.data.pricing_plans import PRICING_FAQ, PRICING_PAGE, PRICING_PLANS
 from app.data.static_pages import ABOUT_PAGE, CONTACT_PAGE, PRIVACY_PAGE, TERMS_PAGE
 from app.services.contact_service import save_contact_message, validate_contact_form
 from app.services.tools_service import search_tools
-from app.utils.seo import breadcrumb_schema
+from app.utils.seo import breadcrumb_schema, faq_schema
 from app.utils.templates import base_context, templates
 
 router = APIRouter(tags=["pages"])
@@ -89,26 +90,22 @@ async def terms(request: Request) -> HTMLResponse:
     )
 
 
-# ── Other pages (unchanged from Sprint 3) ──
-
-_PRICING = {
-    "h1": "Pricing", "title": "Pricing — Seller Toolkit",
-    "description": "Seller Toolkit pricing. Most tools are free.",
-    "content": (
-        "<p><strong>Free Plan</strong> — Most calculators and tools at no cost.</p>"
-        "<p><strong>AI Tools</strong> — Free daily usage with optional packages coming soon.</p>"
-    ),
-}
-
+# ── Pricing (commercial Phase 1) ──
 
 @router.get("/pricing", response_class=HTMLResponse)
 async def pricing(request: Request) -> HTMLResponse:
-    ctx = base_context()
-    return templates.TemplateResponse(request=request, name="page.html", context={
-        **ctx, "page_title": _PRICING["title"], "page_description": _PRICING["description"],
-        "canonical_url": ctx["site_url"] + "/pricing", "page_h1": _PRICING["h1"],
-        "page_content": _PRICING["content"],
-    })
+    crumbs = PRICING_PAGE.get("breadcrumb", [])
+    ctx = _static_context(PRICING_PAGE, slug="pricing")
+    return templates.TemplateResponse(
+        request=request, name="pricing.html",
+        context={
+            **ctx,
+            "plans": PRICING_PLANS,
+            "faq_items": PRICING_FAQ,
+            "schema_faq": faq_schema(PRICING_FAQ),
+            "schema_breadcrumb": breadcrumb_schema(crumbs, ctx["site_url"]),
+        },
+    )
 
 
 @router.get("/policy", response_class=HTMLResponse)

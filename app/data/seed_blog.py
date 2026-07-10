@@ -1,4 +1,6 @@
-"""Blog seed posts for Sprint 6."""
+"""Blog seed posts for Sprint 6 + commercial SEO articles."""
+
+from app.data.seed_blog_extra import EXTRA_BLOG_POSTS
 
 SEED_BLOG_POSTS: list[dict] = [
     {
@@ -67,4 +69,4 @@ SEED_BLOG_POSTS: list[dict] = [
         "seo_description": "Learn how to respond to negative Amazon reviews professionally. Use our free AI Review Reply Generator to draft responses.",
         "published_date": "2026-06-25",
     },
-]
+] + EXTRA_BLOG_POSTS

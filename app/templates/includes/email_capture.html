@@ -1,0 +1,19 @@
+{# Reusable email capture — lead generation #}
+<div class="email-capture {{ extra_class | default('') }}" data-source="{{ source | default('other') }}">
+    {% if compact %}
+    <form class="email-capture-form email-capture-compact d-flex flex-column flex-sm-row gap-2" novalidate>
+        <input type="email" class="form-control" name="email" placeholder="{{ placeholder | default('Enter your email') }}" required aria-label="Email address">
+        <button type="submit" class="btn btn-primary px-4 text-nowrap">{{ button_text | default('Subscribe') }}</button>
+    </form>
+    {% else %}
+    {% if title %}<h3 class="h6 fw-semibold mb-2">{{ title }}</h3>{% endif %}
+    {% if description %}<p class="text-secondary small mb-3">{{ description }}</p>{% endif %}
+    <form class="email-capture-form" novalidate>
+        <div class="input-group">
+            <input type="email" class="form-control" name="email" placeholder="{{ placeholder | default('you@example.com') }}" required aria-label="Email address">
+            <button type="submit" class="btn btn-primary">{{ button_text | default('Get Free Access') }}</button>
+        </div>
+    </form>
+    {% endif %}
+    <div class="email-capture-msg small mt-2 d-none" role="status"></div>
+</div>

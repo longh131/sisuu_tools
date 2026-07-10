@@ -1,4 +1,10 @@
 {# Unified tool form component #}
+{% if config.tool_type == 'ai' and usage_status %}
+<div class="alert alert-light border small py-2 mb-3" id="usageBadge">
+    AI uses today: <strong>{{ usage_status.used }}</strong> / {{ usage_status.limit if usage_status.limit > 0 else '∞' }}
+    {% if usage_status.tier == 'guest' %} — <a href="/pricing">Get more</a>{% endif %}
+</div>
+{% endif %}
 {% if config.fields %}
 <form id="toolForm" class="tool-form" data-slug="{{ tool.slug }}" data-type="{{ config.tool_type }}" novalidate>
     <div class="card tool-form-card p-4 mb-4">
@@ -60,3 +66,7 @@
     <div class="spinner-border text-primary" role="status"></div>
     <p class="text-secondary mt-2 mb-0" id="toolLoadingText">Processing...</p>
 </div>
+
+{% if config.tool_type == 'ai' %}
+{% include "includes/tool_post_cta.html" %}
+{% endif %}

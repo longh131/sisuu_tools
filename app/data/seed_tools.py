@@ -2,6 +2,8 @@
 Expanded tool seed data — all categories per docs/06-工具中心.md
 """
 
+from app.data.seed_tools_extra import EXTRA_TOOLS
+
 SEED_TOOLS: list[dict] = [
     # ── Calculators (MVP) ──
     {"name": "Amazon Fee Calculator", "slug": "amazon-fee-calculator",
@@ -87,7 +89,7 @@ SEED_TOOLS: list[dict] = [
      "intro": "Look up eCommerce terms and marketplace jargon.",
      "icon": "list", "category": "seller-resources", "is_ai": False,
      "is_popular": False, "is_featured": False, "sort_order": 16},
-]
+] + EXTRA_TOOLS
 
 TOOLS_PER_PAGE = 12
 

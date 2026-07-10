@@ -1,0 +1,16 @@
+{# Post-tool email CTA — shown after AI tool results #}
+<div id="toolPostCta" class="tool-post-cta card border-primary-subtle bg-light p-4 mb-4 d-none">
+    <div class="row align-items-center g-3">
+        <div class="col-lg-8">
+            <h3 class="h6 fw-semibold mb-1">Want more free AI uses?</h3>
+            <p class="text-secondary small mb-0">
+                Subscribe for 10 daily AI generations. Pro plans with unlimited access coming soon.
+            </p>
+        </div>
+        <div class="col-lg-4">
+            {% with source="tool_result", compact=true, placeholder="Your email", button_text="Unlock 10/day" %}
+            {% include "includes/email_capture.html" %}
+            {% endwith %}
+        </div>
+    </div>
+</div>

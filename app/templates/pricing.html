@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+{% if schema_breadcrumb %}
+<script type="application/ld+json">{{ schema_breadcrumb | safe }}</script>
+{% endif %}
+{% if schema_faq %}
+<script type="application/ld+json">{{ schema_faq | safe }}</script>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="section-py bg-white">
+    <div class="container">
+        {% include "includes/breadcrumb.html" %}
+
+        <div class="text-center mb-5">
+            <h1 class="section-title fw-bold mb-3">{{ page_h1 }}</h1>
+            <p class="text-secondary lead mx-auto" style="max-width: 640px;">
+                Start free. Upgrade when you need more AI power. No credit card required.
+            </p>
+        </div>
+
+        <div class="row g-4 justify-content-center align-items-stretch">
+            {% for plan in plans %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card pricing-card h-100 {% if plan.highlighted %}pricing-card-featured border-primary shadow{% else %}border-0 shadow-sm{% endif %}">
+                    {% if plan.badge %}
+                    <div class="pricing-badge">{{ plan.badge }}</div>
+                    {% endif %}
+                    <div class="card-body p-4 d-flex flex-column">
+                        <h2 class="h5 fw-bold mb-1">{{ plan.name }}</h2>
+                        <p class="text-secondary small mb-3">{{ plan.description }}</p>
+                        <div class="pricing-price mb-4">
+                            <span class="display-6 fw-bold">{{ plan.price }}</span>
+                            <span class="text-secondary">{{ plan.period }}</span>
+                        </div>
+                        <ul class="list-unstyled pricing-features flex-grow-1 mb-4">
+                            {% for feature in plan.features %}
+                            <li class="d-flex align-items-start gap-2 mb-2">
+                                <i data-lucide="check" class="icon-sm text-primary flex-shrink-0 mt-1"></i>
+                                <span class="small">{{ feature }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        <a href="{{ plan.cta_url }}"
+                           class="btn btn-{{ plan.cta_style }} w-100 py-2"
+                           data-cta="pricing-{{ plan.id }}">
+                            {{ plan.cta_text }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-5 pt-4">
+            <p class="text-secondary mb-3">Get seller tips and early access to new tools.</p>
+            <div class="mx-auto" style="max-width: 420px;">
+                {% with source="pricing", title="Join our seller community", description="Free subscribers get 10 AI uses per day." %}
+                {% include "includes/email_capture.html" %}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-py bg-light">
+    <div class="container">
+        <h2 class="h4 fw-bold mb-4 text-center">Pricing FAQ</h2>
+        <div class="accordion mx-auto" id="pricingFaq" style="max-width: 720px;">
+            {% for item in faq_items %}
+            <div class="accordion-item">
+                <h3 class="accordion-header">
+                    <button class="accordion-button {% if not loop.first %}collapsed{% endif %}" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#pfq{{ loop.index }}">
+                        {{ item.question }}
+                    </button>
+                </h3>
+                <div id="pfq{{ loop.index }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}"
+                     data-bs-parent="#pricingFaq">
+                    <div class="accordion-body text-secondary">{{ item.answer }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
