@@ -11,7 +11,7 @@ from app.utils.logger import get_logger
 logger = get_logger("leads")
 
 EMAIL_PATTERN = re.compile(r"^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$")
-VALID_SOURCES = {"hero", "footer", "tool_result", "pricing", "popup", "other"}
+VALID_SOURCES = {"hero", "footer", "tool_result", "pricing", "pricing_pro", "pricing_business", "popup", "other"}
 
 
 def validate_email(email: str) -> str | None:

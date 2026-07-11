@@ -43,6 +43,7 @@
 
     {% include "includes/footer_assets.html" %}
     <script src="{{ static_url('js/leads.js') }}" defer></script>
+    {% if ga_measurement_id %}<script src="{{ static_url('js/analytics.js') }}" defer></script>{% endif %}
     {% block extra_scripts %}{% endblock %}
 </body>
 </html>

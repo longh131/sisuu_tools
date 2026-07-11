@@ -12,7 +12,7 @@ from app.utils.logger import get_logger
 logger = get_logger("contact")
 
 EMAIL_PATTERN = re.compile(r"^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$")
-VALID_SUBJECTS = {"general", "tool", "bug", "partnership", "other"}
+VALID_SUBJECTS = {"general", "tool", "bug", "partnership", "pro", "business", "other"}
 
 
 def validate_contact_form(name: str, email: str, subject: str, message: str) -> str | None:

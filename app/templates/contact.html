@@ -1,6 +1,11 @@
 {% extends "static_page.html" %}
 
 {% block page_body %}
+{% if plan_interest %}
+<div class="alert alert-info" role="alert">
+    Payments are not live yet. Tell us you're interested in <strong>{{ plan_interest | title }}</strong> and we'll notify you at launch.
+</div>
+{% endif %}
 <p class="text-secondary mb-4">
     Have a question, tool suggestion, or partnership inquiry? We'd love to hear from you.
     Fill out the form below and we will respond within 2 business days.
@@ -39,6 +44,8 @@
                     <option value="tool" {% if form.subject == 'tool' %}selected{% endif %}>Tool Suggestion</option>
                     <option value="bug" {% if form.subject == 'bug' %}selected{% endif %}>Report a Bug</option>
                     <option value="partnership" {% if form.subject == 'partnership' %}selected{% endif %}>Partnership</option>
+                    <option value="pro" {% if form.subject == 'pro' %}selected{% endif %}>Pro Plan Waitlist ($19/mo)</option>
+                    <option value="business" {% if form.subject == 'business' %}selected{% endif %}>Business Plan Waitlist ($49/mo)</option>
                     <option value="other" {% if form.subject == 'other' %}selected{% endif %}>Other</option>
                 </select>
             </div>

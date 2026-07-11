@@ -4,6 +4,7 @@ from fastapi import APIRouter, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 
 from app.config import get_settings
+from app.services.stats_service import get_dashboard_stats
 from app.data.seed_blog import SEED_BLOG_POSTS
 from app.data.seed_tools import SEED_TOOLS
 from app.data.tool_categories import TOOL_CATEGORIES
@@ -58,6 +59,9 @@ async def admin_dashboard(request: Request) -> HTMLResponse:
         "tool_count": len(SEED_TOOLS),
         "blog_count": len(SEED_BLOG_POSTS),
         "category_count": len(TOOL_CATEGORIES),
+        "stats": get_dashboard_stats(),
+        "debug": settings.debug,
+        "payment_provider": settings.payment_provider,
     })
 
 

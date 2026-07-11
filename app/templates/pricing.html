@@ -19,6 +19,7 @@
             <p class="text-secondary lead mx-auto" style="max-width: 640px;">
                 Start free. Upgrade when you need more AI power. No credit card required.
             </p>
+            <p class="text-muted small">Paid plans coming soon — join the waitlist via Upgrade or email.</p>
         </div>
 
         <div class="row g-4 justify-content-center align-items-stretch">
@@ -29,6 +30,9 @@
                     <div class="pricing-badge">{{ plan.badge }}</div>
                     {% endif %}
                     <div class="card-body p-4 d-flex flex-column">
+                        {% if plan.coming_soon %}
+                        <span class="badge bg-warning-subtle text-warning-emphasis mb-2">Coming Soon</span>
+                        {% endif %}
                         <h2 class="h5 fw-bold mb-1">{{ plan.name }}</h2>
                         <p class="text-secondary small mb-3">{{ plan.description }}</p>
                         <div class="pricing-price mb-4">

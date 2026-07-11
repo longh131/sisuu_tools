@@ -3,7 +3,7 @@
 {% block page_title %}仪表盘{% endblock %}
 {% block content %}
 <div class="row g-4">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="card border-0 shadow-sm">
             <div class="card-body text-center">
                 <h2 class="display-6 text-primary">{{ tool_count }}</h2>
@@ -11,7 +11,25 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center">
+                <h2 class="display-6 text-primary">{{ stats.leads.total }}</h2>
+                <p class="text-secondary mb-0">Email 订阅</p>
+                <small class="text-muted">今日 +{{ stats.leads.today }}</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center">
+                <h2 class="display-6 text-primary">{{ stats.usage.total }}</h2>
+                <p class="text-secondary mb-0">AI 使用 (30天)</p>
+                <small class="text-muted">今日 {{ stats.usage.today }}</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
         <div class="card border-0 shadow-sm">
             <div class="card-body text-center">
                 <h2 class="display-6 text-primary">{{ blog_count }}</h2>
@@ -19,16 +37,53 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+</div>
+
+<div class="row g-4 mt-2">
+    <div class="col-md-6">
         <div class="card border-0 shadow-sm">
-            <div class="card-body text-center">
-                <h2 class="display-6 text-primary">{{ category_count }}</h2>
-                <p class="text-secondary mb-0">工具分类</p>
+            <div class="card-header bg-white fw-semibold">Email 来源统计</div>
+            <div class="card-body p-0">
+                {% if stats.leads.by_source %}
+                <table class="table table-sm mb-0">
+                    <thead><tr><th>来源</th><th class="text-end">数量</th></tr></thead>
+                    <tbody>
+                    {% for row in stats.leads.by_source %}
+                    <tr><td>{{ row.source }}</td><td class="text-end">{{ row.count }}</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-secondary p-3 mb-0">暂无数据</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white fw-semibold">热门 AI 工具 (30天)</div>
+            <div class="card-body p-0">
+                {% if stats.usage.top_tools %}
+                <table class="table table-sm mb-0">
+                    <thead><tr><th>工具</th><th class="text-end">次数</th></tr></thead>
+                    <tbody>
+                    {% for row in stats.usage.top_tools %}
+                    <tr><td><code>{{ row.slug }}</code></td><td class="text-end">{{ row.count }}</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-secondary p-3 mb-0">暂无数据</p>
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
-<div class="alert alert-info mt-4">
-    后台基础功能已就绪。工具/文章数据当前使用 Seed 数据，数据库 CRUD 将在后续版本完善。
+
+<div class="alert alert-info mt-4 mb-0">
+    <strong>上线状态：</strong>
+    DEBUG={{ 'true' if debug else 'false' }} ·
+    支付={{ payment_provider }}（暂未接入真实支付）·
+    工具/文章数据来自 Seed，用户数据来自数据库。
 </div>
 {% endblock %}

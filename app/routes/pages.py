@@ -39,10 +39,25 @@ async def about(request: Request) -> HTMLResponse:
 
 
 @router.get("/contact", response_class=HTMLResponse)
-async def contact_page(request: Request) -> HTMLResponse:
+async def contact_page(
+    request: Request,
+    plan: str | None = Query(None),
+    email: str | None = Query(None),
+) -> HTMLResponse:
+    """Contact page with optional plan prefill from Pricing upgrade."""
+    prefill: dict = {}
+    if plan in ("pro", "business"):
+        prefill["subject"] = plan
+        prefill["message"] = f"I am interested in the {plan.title()} plan. Please notify me when it launches."
+    if email:
+        prefill["email"] = email
     return templates.TemplateResponse(
         request=request, name="contact.html",
-        context={**_static_context(CONTACT_PAGE, slug="contact"), "success": False, "error": None, "form": {}},
+        context={
+            **_static_context(CONTACT_PAGE, slug="contact"),
+            "success": False, "error": None, "form": prefill,
+            "plan_interest": plan,
+        },
     )
 
 

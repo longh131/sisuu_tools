@@ -43,10 +43,11 @@ PRICING_PLANS: list[dict] = [
             "Email support",
         ],
         "cta_text": "Upgrade Now",
-        "cta_url": "/contact?subject=pro",
+        "cta_url": "/contact?plan=pro",
         "cta_style": "primary",
         "highlighted": True,
         "badge": "Most Popular",
+        "coming_soon": True,
     },
     {
         "id": "business",
@@ -62,9 +63,10 @@ PRICING_PLANS: list[dict] = [
             "Dedicated support",
         ],
         "cta_text": "Upgrade Now",
-        "cta_url": "/contact?subject=business",
+        "cta_url": "/contact?plan=business",
         "cta_style": "outline",
         "highlighted": False,
+        "coming_soon": True,
     },
 ]
 
@@ -75,7 +77,7 @@ PRICING_FAQ: list[dict] = [
     },
     {
         "question": "When will Pro and Business plans launch?",
-        "answer": "Pro ($19/month) and Business ($49/month) plans are coming soon. Join our email list to get early access and launch pricing.",
+        "answer": "Pro ($19/month) and Business ($49/month) are coming soon. Click Upgrade to join the waitlist — we will notify you when payments go live. No charge until then.",
     },
     {
         "question": "Do I need a credit card to start?",

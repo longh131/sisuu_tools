@@ -45,6 +45,9 @@ class Settings(BaseSettings):
     # Analytics — Google Analytics 4 (leave empty to disable)
     ga_measurement_id: str = ""
 
+    # Payment provider (stub | stripe | paddle — future)
+    payment_provider: str = "stub"
+
     @property
     def site_url(self) -> str:
         """Canonical site URL used for SEO meta tags."""
