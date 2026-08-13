@@ -1,0 +1,55 @@
+{% extends "admin/base.html" %}
+{% set active = "payments" %}
+{% block page_title %}支付 / 订阅{% endblock %}
+{% block content %}
+<div class="alert alert-{% if payments_live %}success{% else %}warning{% endif %}">
+    当前支付：<strong>{{ payment_provider }}</strong>
+    {% if payments_live %} — 已配置，Pricing 页可真实付款{% else %}
+    — 未配置，Upgrade 走 Contact 候补；可在后台手动升级用户 tier{% endif %}
+</div>
+
+<h5 class="fw-semibold mt-4">订阅记录</h5>
+<div class="card border-0 shadow-sm mb-4">
+    <div class="table-responsive">
+        <table class="table table-sm table-hover mb-0">
+            <thead><tr><th>用户</th><th>Plan</th><th>状态</th><th>外部 ID</th><th>时间</th></tr></thead>
+            <tbody>
+                {% for s in subscriptions %}
+                <tr>
+                    <td>{{ s.email }}</td>
+                    <td>{{ s.plan_id }}</td>
+                    <td>{{ s.status }}</td>
+                    <td><code class="small">{{ s.stripe_subscription_id }}</code></td>
+                    <td>{{ s.created_at }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5" class="text-muted text-center py-3">暂无订阅</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<h5 class="fw-semibold">支付流水</h5>
+<div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-sm table-hover mb-0">
+            <thead><tr><th>用户</th><th>Plan</th><th>金额</th><th>状态</th><th>Session</th><th>时间</th></tr></thead>
+            <tbody>
+                {% for p in payments %}
+                <tr>
+                    <td>{{ p.email }}</td>
+                    <td>{{ p.plan_id }}</td>
+                    <td>${{ '%.2f'|format(p.amount_cents / 100) }} {{ p.currency|upper }}</td>
+                    <td>{{ p.status }}</td>
+                    <td><code class="small">{{ p.session_id }}</code></td>
+                    <td>{{ p.created_at }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6" class="text-muted text-center py-3">暂无支付记录</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

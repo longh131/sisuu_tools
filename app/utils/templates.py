@@ -25,11 +25,23 @@ templates.env.globals["article_schema"] = article_schema
 
 def base_context() -> dict:
     """Return common template context shared across all pages."""
+    ga = settings.ga_measurement_id
+    if not ga:
+        try:
+            from app.database import SessionLocal
+            from app.services.settings_service import get_setting
+            db = SessionLocal()
+            try:
+                ga = get_setting(db, "ga_measurement_id", "")
+            finally:
+                db.close()
+        except Exception:
+            pass
     return {
         "app_name": settings.app_name,
         "site_url": settings.site_url,
         "static_version": STATIC_VERSION,
         "og_image_url": og_image_url(),
         "cdn": CDN_ASSETS,
-        "ga_measurement_id": settings.ga_measurement_id,
+        "ga_measurement_id": ga,
     }

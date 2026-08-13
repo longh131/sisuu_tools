@@ -40,9 +40,21 @@ class StubPaymentProvider(PaymentProvider):
 
 
 def get_payment_provider() -> PaymentProvider:
-    """Return active payment provider. Extend when Stripe/Paddle is added."""
+    """Return active payment provider."""
     provider_name = getattr(settings, "payment_provider", "stub")
+
+    if provider_name == "paypal":
+        from app.payment.paypal_provider import PayPalPaymentProvider
+        provider = PayPalPaymentProvider()
+        if provider.is_available():
+            return provider
+
+    if provider_name == "stripe":
+        from app.payment.stripe_provider import StripePaymentProvider
+        provider = StripePaymentProvider()
+        if provider.is_available():
+            return provider
+
     if provider_name == "stub":
         return StubPaymentProvider()
-    # Future: elif provider_name == "stripe": return StripeProvider()
     return StubPaymentProvider()

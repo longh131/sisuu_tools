@@ -1,8 +1,10 @@
 """Tool Center and tool detail routes — Sprint 3."""
 
-from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import HTMLResponse
+from sqlalchemy.orm import Session
 
+from app.database import get_db
 from app.services.tools_service import (
     get_all_categories,
     get_all_tools,
@@ -40,6 +42,7 @@ def _category_url(category: str | None, page: int = 1) -> str:
 
 def _render_tools_page(
     request: Request,
+    db: Session,
     *,
     page_h1: str,
     page_intro: str,
@@ -54,7 +57,7 @@ def _render_tools_page(
     pagination = paginate_tools(tools, page)
     canonical = _category_url(active_category, page)
     faqs = get_category_faqs(active_category)
-    related = get_popular_tools_list(limit=6)
+    related = get_popular_tools_list(db, limit=6)
 
     context = {
         **ctx,
@@ -87,41 +90,41 @@ def _breadcrumbs(category: str | None, title: str) -> list[dict]:
 
 
 @router.get("/tools", response_class=HTMLResponse, name="tools")
-async def tools_all(request: Request) -> HTMLResponse:
+async def tools_all(request: Request, db: Session = Depends(get_db)) -> HTMLResponse:
     return _render_tools_page(
-        request,
+        request, db,
         page_h1="Seller Tools",
         page_intro=(
             "Free tools for Amazon, eBay, Shopify, Walmart and TikTok Shop sellers. "
             "Browse AI tools, calculators, policy center and seller resources."
         ),
-        tools=get_all_tools(),
+        tools=get_all_tools(db),
         page=1,
     )
 
 
 @router.get("/tools/page/{page_num:int}", response_class=HTMLResponse)
-async def tools_all_paged(request: Request, page_num: int) -> HTMLResponse:
+async def tools_all_paged(request: Request, page_num: int, db: Session = Depends(get_db)) -> HTMLResponse:
     return _render_tools_page(
-        request,
+        request, db,
         page_h1="Seller Tools",
         page_intro="Free tools for global eCommerce sellers.",
-        tools=get_all_tools(),
+        tools=get_all_tools(db),
         page=page_num,
         page_title=f"Seller Tools — Page {page_num}",
     )
 
 
 @router.get("/tools/{slug}/page/{page_num:int}", response_class=HTMLResponse)
-async def category_paged(request: Request, slug: str, page_num: int) -> HTMLResponse:
+async def category_paged(request: Request, slug: str, page_num: int, db: Session = Depends(get_db)) -> HTMLResponse:
     if not is_category_slug(slug):
         raise HTTPException(status_code=404, detail="Category not found")
     cat = get_category(slug)
     return _render_tools_page(
-        request,
+        request, db,
         page_h1=cat["name"],
         page_intro=cat["description"],
-        tools=get_tools_by_category(slug),
+        tools=get_tools_by_category(slug, db),
         page=page_num,
         active_category=slug,
         page_title=f"{cat['name']} — {TOOLS_TITLE}",
@@ -130,15 +133,15 @@ async def category_paged(request: Request, slug: str, page_num: int) -> HTMLResp
 
 
 @router.get("/tools/{slug}", response_class=HTMLResponse, name="tool_or_category")
-async def tool_or_category(request: Request, slug: str) -> HTMLResponse:
+async def tool_or_category(request: Request, slug: str, db: Session = Depends(get_db)) -> HTMLResponse:
     # Category page
     if is_category_slug(slug):
         cat = get_category(slug)
         return _render_tools_page(
-            request,
+            request, db,
             page_h1=cat["name"],
             page_intro=cat["description"],
-            tools=get_tools_by_category(slug),
+            tools=get_tools_by_category(slug, db),
             page=1,
             active_category=slug,
             page_title=f"{cat['name']} — {TOOLS_TITLE}",
@@ -146,7 +149,7 @@ async def tool_or_category(request: Request, slug: str) -> HTMLResponse:
         )
 
     # Tool detail page
-    tool = get_tool_by_slug(slug)
+    tool = get_tool_by_slug(slug, db)
     if not tool:
         raise HTTPException(status_code=404, detail="Not found")
 
@@ -161,7 +164,7 @@ async def tool_or_category(request: Request, slug: str) -> HTMLResponse:
         "tool": tool,
         "config": config,
         "faqs": config.get("faqs", []),
-        "related_tools": get_related_tools(slug),
+        "related_tools": get_related_tools(slug, db),
         "breadcrumbs": [
             {"name": "Home", "url": "/"},
             {"name": "Tools", "url": "/tools"},

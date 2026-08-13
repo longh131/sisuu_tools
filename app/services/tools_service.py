@@ -25,9 +25,9 @@ def _tool_from_db(row) -> dict:
         "category": row.category.slug if row.category else "",
         "category_name": row.category.name if row.category else "",
         "is_ai": row.is_ai,
-        "is_popular": getattr(row, "is_popular", False),
-        "is_featured": getattr(row, "is_featured", False),
-        "sort_order": getattr(row, "sort_order", 99),
+        "is_popular": row.is_popular,
+        "is_featured": row.is_featured,
+        "sort_order": row.sort_order,
         "status": row.status,
     }
 
@@ -37,7 +37,13 @@ def _load_tools(db: Session | None = None) -> list[dict]:
     if db:
         try:
             from app.models.tool import Tool
-            rows = db.query(Tool).filter(Tool.status == True).all()  # noqa: E712
+            from sqlalchemy.orm import joinedload
+            rows = (
+                db.query(Tool)
+                .options(joinedload(Tool.category))
+                .filter(Tool.status == True)  # noqa: E712
+                .all()
+            )
             if rows:
                 return [_tool_from_db(r) for r in rows]
         except Exception:

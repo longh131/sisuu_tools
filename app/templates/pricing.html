@@ -19,7 +19,9 @@
             <p class="text-secondary lead mx-auto" style="max-width: 640px;">
                 Start free. Upgrade when you need more AI power. No credit card required.
             </p>
-            <p class="text-muted small">Paid plans coming soon — join the waitlist via Upgrade or email.</p>
+            <p class="text-muted small">
+                {% if payments_enabled %}Upgrade instantly with secure checkout.{% else %}Paid plans coming soon — join the waitlist via Upgrade or email.{% endif %}
+            </p>
         </div>
 
         <div class="row g-4 justify-content-center align-items-stretch">
@@ -47,11 +49,17 @@
                             </li>
                             {% endfor %}
                         </ul>
+                        {% if plan.cta_checkout %}
+                        <button type="button" class="btn btn-{{ plan.cta_style }} w-100 py-2 checkout-btn" data-plan="{{ plan.id }}">
+                            {{ plan.cta_text }}
+                        </button>
+                        {% else %}
                         <a href="{{ plan.cta_url }}"
                            class="btn btn-{{ plan.cta_style }} w-100 py-2"
                            data-cta="pricing-{{ plan.id }}">
                             {{ plan.cta_text }}
                         </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -90,4 +98,8 @@
         </div>
     </div>
 </section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/static/js/billing.js?v={{ static_version }}" defer></script>
 {% endblock %}

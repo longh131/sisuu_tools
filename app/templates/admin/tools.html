@@ -2,6 +2,10 @@
 {% set active = "tools" %}
 {% block page_title %}工具管理{% endblock %}
 {% block content %}
+<div class="d-flex justify-content-between mb-3">
+    <p class="text-secondary mb-0">共 {{ tools|length }} 个工具</p>
+    <a href="/admin/tools/new" class="btn btn-primary btn-sm">+ 新增工具</a>
+</div>
 <div class="card border-0 shadow-sm">
     <div class="card-body">
         <table class="table table-hover">
@@ -20,10 +24,24 @@
                 <tr>
                     <td>{{ tool.name }}</td>
                     <td><code>{{ tool.slug }}</code></td>
-                    <td>{{ tool.category }}</td>
+                    <td>{{ tool.category if tool.category is string else tool.get('category', '') }}</td>
                     <td>{% if tool.is_ai %}AI{% else %}工具{% endif %}</td>
-                    <td><span class="badge bg-success">上架</span></td>
-                    <td><a href="/tools/{{ tool.slug }}" target="_blank" class="btn btn-sm btn-outline-primary">预览</a></td>
+                    <td>
+                        {% if tool.status is not defined or tool.status %}
+                        <span class="badge bg-success">上架</span>
+                        {% else %}
+                        <span class="badge bg-secondary">下架</span>
+                        {% endif %}
+                    </td>
+                    <td class="d-flex gap-1">
+                        <a href="/tools/{{ tool.slug }}" target="_blank" class="btn btn-sm btn-outline-primary">预览</a>
+                        {% if tool.id %}
+                        <a href="/admin/tools/{{ tool.id }}/edit" class="btn btn-sm btn-outline-secondary">编辑</a>
+                        <form method="post" action="/admin/tools/{{ tool.id }}/delete" class="d-inline" onsubmit="return confirm('确认下架此工具？')">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">下架</button>
+                        </form>
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

@@ -1,0 +1,56 @@
+{% extends "admin/base.html" %}
+{% set active = "tools" %}
+{% block page_title %}{% if tool %}编辑工具{% else %}新增工具{% endif %}{% endblock %}
+{% block content %}
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <form method="post" action="/admin/tools/save">
+            {% if tool %}<input type="hidden" name="tool_id" value="{{ tool.id }}">{% endif %}
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">名称</label>
+                    <input class="form-control" name="name" required value="{{ tool.name if tool else '' }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Slug</label>
+                    <input class="form-control" name="slug" required value="{{ tool.slug if tool else '' }}">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">分类</label>
+                    <select class="form-select" name="category_id" required>
+                        {% for cat in categories %}
+                        <option value="{{ cat.id }}" {% if tool and tool.category_id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">图标 (Lucide)</label>
+                    <input class="form-control" name="icon" value="{{ tool.icon if tool else 'wrench' }}">
+                </div>
+                <div class="col-12">
+                    <label class="form-label">描述</label>
+                    <textarea class="form-control" name="description" rows="2">{{ tool.description if tool else '' }}</textarea>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">简介 (Intro)</label>
+                    <textarea class="form-control" name="intro" rows="2">{{ tool.intro if tool else '' }}</textarea>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">排序</label>
+                    <input class="form-control" type="number" name="sort_order" value="{{ tool.sort_order if tool else 99 }}">
+                </div>
+                <div class="col-md-9 d-flex align-items-end gap-3 flex-wrap">
+                    <label class="form-check"><input class="form-check-input" type="checkbox" name="is_ai" value="true" {% if tool and tool.is_ai %}checked{% endif %}> AI 工具</label>
+                    <label class="form-check"><input class="form-check-input" type="checkbox" name="is_popular" value="true" {% if tool and tool.is_popular %}checked{% endif %}> 热门</label>
+                    <label class="form-check"><input class="form-check-input" type="checkbox" name="is_featured" value="true" {% if tool and tool.is_featured %}checked{% endif %}> 推荐</label>
+                    <label class="form-check"><input class="form-check-input" type="checkbox" name="status" value="true" {% if not tool or tool.status %}checked{% endif %}> 上架</label>
+                </div>
+            </div>
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <a href="/admin/tools" class="btn btn-outline-secondary">取消</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

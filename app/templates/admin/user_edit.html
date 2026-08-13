@@ -1,0 +1,29 @@
+{% extends "admin/base.html" %}
+{% set active = "users" %}
+{% block page_title %}编辑用户{% endblock %}
+{% block content %}
+{% if request.query_params.get('saved') %}
+<div class="alert alert-success">已保存</div>
+{% endif %}
+<div class="card border-0 shadow-sm" style="max-width: 520px;">
+    <div class="card-body">
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <form method="post" action="/admin/users/{{ user.id }}/save" class="vstack gap-3">
+            <div>
+                <label class="form-label">会员 Tier</label>
+                <select class="form-select" name="tier">
+                    {% for t in ['registered', 'pro', 'business'] %}
+                    <option value="{{ t }}" {% if user.tier == t %}selected{% endif %}>{{ t }}</option>
+                    {% endfor %}
+                </select>
+                <div class="form-text">手动升级：用户 PayPal 转账后可在此设为 pro / business</div>
+            </div>
+            <label class="form-check">
+                <input class="form-check-input" type="checkbox" name="is_active" value="true" {% if user.is_active %}checked{% endif %}>
+                账户启用
+            </label>
+            <button type="submit" class="btn btn-primary">保存</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

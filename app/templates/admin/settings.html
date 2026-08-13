@@ -2,37 +2,66 @@
 {% set active = "settings" %}
 {% block page_title %}系统设置{% endblock %}
 {% block content %}
-<div class="row g-4">
-    <div class="col-md-6">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white fw-semibold">网站设置</div>
-            <div class="card-body">
-                <dl class="row mb-0">
-                    <dt class="col-sm-4">网站名称</dt><dd class="col-sm-8">{{ app_name }}</dd>
-                    <dt class="col-sm-4">域名</dt><dd class="col-sm-8">{{ domain }}</dd>
-                    <dt class="col-sm-4">调试模式</dt><dd class="col-sm-8">{{ "开启" if debug else "关闭" }}</dd>
-                </dl>
+{% if saved %}
+<div class="alert alert-success">设置已保存（GA4 等会写入数据库；.env 中的值优先级更高）</div>
+{% endif %}
+<form method="post" action="/admin/settings/save">
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white fw-semibold">网站设置（数据库）</div>
+                <div class="card-body vstack gap-3">
+                    <div>
+                        <label class="form-label">网站名称</label>
+                        <input class="form-control" name="site_name" value="{{ db_settings.get('site_name', app_name) }}">
+                    </div>
+                    <div>
+                        <label class="form-label">联系邮箱</label>
+                        <input class="form-control" name="contact_email" value="{{ db_settings.get('contact_email', '') }}">
+                    </div>
+                    <div>
+                        <label class="form-label">Footer 文案</label>
+                        <input class="form-control" name="footer_text" value="{{ db_settings.get('footer_text', '') }}">
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white fw-semibold">AI 设置</div>
-            <div class="card-body">
-                <dl class="row mb-0">
-                    <dt class="col-sm-4">DeepSeek API</dt>
-                    <dd class="col-sm-8">
-                        {% if has_ai_key %}
-                        <span class="badge bg-success">已配置</span>
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white fw-semibold">SEO / 统计</div>
+                <div class="card-body vstack gap-3">
+                    <div>
+                        <label class="form-label">GA4 Measurement ID</label>
+                        <input class="form-control" name="ga_measurement_id" placeholder="G-XXXXXXXXXX"
+                               value="{{ db_settings.get('ga_measurement_id', '') }}">
+                        {% if env_ga %}
+                        <div class="form-text text-success">.env 已配置：{{ env_ga }}（优先使用）</div>
                         {% else %}
-                        <span class="badge bg-warning">未配置</span>
-                        <small class="text-muted d-block mt-1">请在 .env 中设置 DEEPSEEK_API_KEY</small>
+                        <div class="form-text">也可在 .env 设置 GA_MEASUREMENT_ID</div>
                         {% endif %}
-                    </dd>
-                    <dt class="col-sm-4">模型</dt><dd class="col-sm-8">deepseek-chat</dd>
-                </dl>
+                    </div>
+                    <div>
+                        <label class="form-label">Bing 验证 meta（可选）</label>
+                        <input class="form-control" name="bing_site_verification" value="{{ db_settings.get('bing_site_verification', '') }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white fw-semibold">运行时（只读，改 .env）</div>
+                <div class="card-body">
+                    <dl class="row mb-0 small">
+                        <dt class="col-sm-4">域名</dt><dd class="col-sm-8">{{ domain }}</dd>
+                        <dt class="col-sm-4">DEBUG</dt><dd class="col-sm-8">{{ "开启" if debug else "关闭" }}</dd>
+                        <dt class="col-sm-4">支付</dt><dd class="col-sm-8">{{ payment_provider }}{% if payments_live %} ✅{% endif %}</dd>
+                        <dt class="col-sm-4">DeepSeek</dt>
+                        <dd class="col-sm-8">{% if has_ai_key %}<span class="badge bg-success">已配置</span>{% else %}<span class="badge bg-warning">未配置</span>{% endif %}</dd>
+                    </dl>
+                </div>
             </div>
         </div>
     </div>
-</div>
+    <button type="submit" class="btn btn-primary mt-4">保存设置</button>
+</form>
 {% endblock %}

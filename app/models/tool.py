@@ -24,6 +24,9 @@ class Tool(Base):
     icon: Mapped[str | None] = mapped_column(String(100), nullable=True)
     cover: Mapped[str | None] = mapped_column(String(500), nullable=True)
     is_ai: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_popular: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_featured: Mapped[bool] = mapped_column(Boolean, default=False)
+    sort_order: Mapped[int] = mapped_column(Integer, default=99)
     status: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime, server_default=func.now(), nullable=False

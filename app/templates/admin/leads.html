@@ -1,0 +1,25 @@
+{% extends "admin/base.html" %}
+{% set active = "leads" %}
+{% block page_title %}Email Leads{% endblock %}
+{% block content %}
+<p class="text-secondary small">共 {{ leads|length }} 条（最新 200 条）</p>
+<div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead><tr><th>Email</th><th>来源</th><th>状态</th><th>时间</th></tr></thead>
+            <tbody>
+                {% for lead in leads %}
+                <tr>
+                    <td>{{ lead.email }}</td>
+                    <td><code>{{ lead.source }}</code></td>
+                    <td>{{ lead.status }}</td>
+                    <td>{{ lead.created_at }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4" class="text-center text-muted py-4">暂无数据</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

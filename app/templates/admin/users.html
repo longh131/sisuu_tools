@@ -1,0 +1,27 @@
+{% extends "admin/base.html" %}
+{% set active = "users" %}
+{% block page_title %}用户管理{% endblock %}
+{% block content %}
+<p class="text-secondary small">共 {{ users|length }} 个注册用户。可手动调整 tier（适用于 PayPal 线下收款等场景）。</p>
+<div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead><tr><th>ID</th><th>Email</th><th>Plan</th><th>状态</th><th>注册时间</th><th></th></tr></thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td>{{ u.id }}</td>
+                    <td>{{ u.email }}</td>
+                    <td><span class="badge bg-primary">{{ u.tier }}</span></td>
+                    <td>{% if u.is_active %}<span class="text-success">正常</span>{% else %}<span class="text-muted">禁用</span>{% endif %}</td>
+                    <td>{{ u.created_at }}</td>
+                    <td><a href="/admin/users/{{ u.id }}/edit" class="btn btn-sm btn-outline-secondary">编辑</a></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6" class="text-center text-muted py-4">暂无注册用户</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section-py">
+    <div class="container" style="max-width: 480px;">
+        <h1 class="h3 fw-bold mb-4">Create Account</h1>
+        {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+        <form method="post" action="/register" class="vstack gap-3">
+            <div>
+                <label class="form-label" for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required autocomplete="email">
+            </div>
+            <div>
+                <label class="form-label" for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required minlength="8" autocomplete="new-password">
+                <div class="form-text">At least 8 characters.</div>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Account</button>
+        </form>
+        <p class="text-secondary small mt-3 mb-0">
+            Already have an account? <a href="/login">Sign in</a>
+        </p>
+    </div>
+</section>
+{% endblock %}

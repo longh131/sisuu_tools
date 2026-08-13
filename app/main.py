@@ -11,6 +11,8 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 
 from app.config import get_settings
+from app.routes.billing import router as billing_router
+from app.routes.auth import router as auth_router
 from app.routes.admin import router as admin_router
 from app.routes.api import router as api_router
 from app.routes.blog import router as blog_router
@@ -62,6 +64,8 @@ app.include_router(home_router)
 app.include_router(tools_router)
 app.include_router(blog_router)
 app.include_router(pages_router)
+app.include_router(auth_router)
+app.include_router(billing_router)
 app.include_router(leads_router)
 app.include_router(api_router)
 app.include_router(admin_router)

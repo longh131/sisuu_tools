@@ -6,7 +6,10 @@ from app.models.system_setting import SystemSetting
 from app.models.tool import Tool
 from app.models.tool_category import ToolCategory
 from app.models.tool_faq import ToolFaq
+from app.models.payment import Payment
+from app.models.subscription import Subscription
 from app.models.usage_log import UsageLog
+from app.models.user import User
 
 __all__ = [
     "ToolCategory",
@@ -16,4 +19,7 @@ __all__ = [
     "SystemSetting",
     "EmailLead",
     "UsageLog",
+    "User",
+    "Subscription",
+    "Payment",
 ]

@@ -45,8 +45,22 @@ class Settings(BaseSettings):
     # Analytics — Google Analytics 4 (leave empty to disable)
     ga_measurement_id: str = ""
 
-    # Payment provider (stub | stripe | paddle — future)
+    # Payment provider (stub | stripe | paypal — default stub until configured)
     payment_provider: str = "stub"
+
+    # Stripe (optional)
+    stripe_secret_key: str = ""
+    stripe_webhook_secret: str = ""
+    stripe_price_pro: str = ""
+    stripe_price_business: str = ""
+
+    # PayPal (recommended — no Stripe needed)
+    paypal_client_id: str = ""
+    paypal_client_secret: str = ""
+    paypal_mode: str = "sandbox"  # sandbox | live
+    paypal_plan_pro: str = ""
+    paypal_plan_business: str = ""
+    paypal_webhook_id: str = ""
 
     @property
     def site_url(self) -> str:

@@ -1,10 +1,13 @@
 """Static content pages — Sprint 7 full pages."""
 
-from fastapi import APIRouter, Form, Query, Request
+from fastapi import APIRouter, Depends, Form, Query, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
+from sqlalchemy.orm import Session
 
+from app.database import get_db
 from app.data.pricing_plans import PRICING_FAQ, PRICING_PAGE, PRICING_PLANS
 from app.data.static_pages import ABOUT_PAGE, CONTACT_PAGE, PRIVACY_PAGE, TERMS_PAGE
+from app.payment import get_payment_provider
 from app.services.contact_service import save_contact_message, validate_contact_form
 from app.services.tools_service import search_tools
 from app.utils.seo import breadcrumb_schema, faq_schema
@@ -111,11 +114,21 @@ async def terms(request: Request) -> HTMLResponse:
 async def pricing(request: Request) -> HTMLResponse:
     crumbs = PRICING_PAGE.get("breadcrumb", [])
     ctx = _static_context(PRICING_PAGE, slug="pricing")
+    provider = get_payment_provider()
+    payments_enabled = provider.is_available()
+    plans = []
+    for plan in PRICING_PLANS:
+        p = dict(plan)
+        if payments_enabled and p["id"] in ("pro", "business"):
+            p["coming_soon"] = False
+            p["cta_checkout"] = True
+        plans.append(p)
     return templates.TemplateResponse(
         request=request, name="pricing.html",
         context={
             **ctx,
-            "plans": PRICING_PLANS,
+            "plans": plans,
+            "payments_enabled": payments_enabled,
             "faq_items": PRICING_FAQ,
             "schema_faq": faq_schema(PRICING_FAQ),
             "schema_breadcrumb": breadcrumb_schema(crumbs, ctx["site_url"]),
@@ -140,13 +153,13 @@ async def resources() -> RedirectResponse:
 
 
 @router.get("/search", response_class=HTMLResponse)
-async def search(request: Request, q: str | None = Query(None)) -> HTMLResponse:
+async def search(request: Request, q: str | None = Query(None), db: Session = Depends(get_db)) -> HTMLResponse:
     from app.routes.tools import _render_tools_page
     return _render_tools_page(
-        request,
+        request, db,
         page_h1="Search Results" if q else "Search Tools",
         page_intro=f'Showing results for "{q}"' if q else "Enter a keyword to find seller tools.",
-        tools=search_tools(q or ""),
+        tools=search_tools(q or "", db),
         page=1,
         page_title=f"Search: {q or 'Tools'} — Seller Toolkit",
     )

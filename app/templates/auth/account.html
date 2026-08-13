@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section-py">
+    <div class="container" style="max-width: 640px;">
+        <h1 class="h3 fw-bold mb-4">My Account</h1>
+        <div class="card mb-4">
+            <div class="card-body">
+                <p class="mb-1"><strong>Email:</strong> {{ current_user.email }}</p>
+                <p class="mb-1"><strong>Plan:</strong> {{ current_user.tier | capitalize }}</p>
+                {% if usage.limit == -1 %}
+                <p class="mb-0 text-secondary">AI uses today: {{ usage.used }} (unlimited)</p>
+                {% else %}
+                <p class="mb-0 text-secondary">AI uses today: {{ usage.used }} / {{ usage.limit }}</p>
+                {% endif %}
+            </div>
+        </div>
+        {% if current_user.tier in ('guest', 'registered') %}
+        <div class="card mb-4 border-primary">
+            <div class="card-body">
+                <h2 class="h6 fw-semibold">Upgrade for more AI power</h2>
+                <p class="text-secondary small">Pro: 100 AI uses/day · Business: unlimited</p>
+                <a href="/pricing" class="btn btn-primary btn-sm">View Plans</a>
+            </div>
+        </div>
+        {% endif %}
+        <a href="/logout" class="btn btn-outline-secondary btn-sm">Sign Out</a>
+    </div>
+</section>
+{% endblock %}

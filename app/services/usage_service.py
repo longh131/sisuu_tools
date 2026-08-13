@@ -29,7 +29,21 @@ def get_visitor_id(request: Request) -> str:
 
 
 def get_user_tier(request: Request) -> str:
-    """Return current usage tier. Extensible for future membership."""
+    """Return current usage tier; refresh from DB when logged in."""
+    user_id = request.session.get("user_id")
+    if user_id:
+        try:
+            db = SessionLocal()
+            try:
+                from app.services.auth_service import get_user_by_id, sync_session_tier
+                user = get_user_by_id(db, int(user_id))
+                if user:
+                    sync_session_tier(request, user)
+                    return user.tier
+            finally:
+                db.close()
+        except Exception:
+            logger.warning("Tier refresh fallback — using session")
     return request.session.get(SESSION_TIER_KEY, "guest")
 
 
