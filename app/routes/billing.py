@@ -10,7 +10,11 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.payment import get_payment_provider
 from app.services.auth_service import get_current_user
-from app.services.billing_service import apply_webhook, record_payment
+from app.services.billing_service import (
+    activate_subscription_from_return,
+    apply_webhook,
+    record_payment,
+)
 from app.utils.page_context import page_context
 from app.utils.templates import templates
 
@@ -67,13 +71,26 @@ async def payment_webhook(request: Request, db: Session = Depends(get_db)):
     if not result.valid:
         raise HTTPException(status_code=400, detail="Invalid webhook")
 
-    apply_webhook(db, result)
+    external_sub_id = ""
+    if provider.name == "paypal":
+        try:
+            event = json.loads(payload)
+            external_sub_id = event.get("resource", {}).get("id", "")
+        except json.JSONDecodeError:
+            pass
+
+    apply_webhook(db, result, external_sub_id=external_sub_id)
     return {"received": True}
 
 
 @router.get("/billing/success", response_class=HTMLResponse)
 async def billing_success(request: Request, db: Session = Depends(get_db)) -> HTMLResponse:
     ctx = page_context(request, db, page_title="Payment Successful")
+    user = ctx.get("current_user")
+    sub_id = request.query_params.get("subscription_id", "")
+    if user and sub_id:
+        activate_subscription_from_return(db, user, sub_id)
+        ctx = page_context(request, db, page_title="Payment Successful")
     return templates.TemplateResponse(request=request, name="billing/success.html", context=ctx)
 
 
