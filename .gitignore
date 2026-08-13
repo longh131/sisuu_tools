@@ -38,3 +38,6 @@ docker-data/
 # Docker Compose files
 docker-compose.yml
 docker-compose.prod.yml
+
+# 配置文件
+deploy.sh
