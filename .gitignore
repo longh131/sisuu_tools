@@ -34,3 +34,7 @@ docker-data/
 
 # Alembic
 # Keep versions tracked
+
+# Docker Compose files
+docker-compose.yml
+docker-compose.prod.yml
