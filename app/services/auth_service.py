@@ -2,24 +2,29 @@
 
 import re
 
+import bcrypt
 from fastapi import Request
-from passlib.context import CryptContext
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from app.models.user import User
+from app.utils.logger import get_logger
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+logger = get_logger("auth")
 
 SESSION_USER_ID = "user_id"
 EMAIL_RE = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
 
 
 def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 
 def verify_password(plain: str, hashed: str) -> bool:
-    return pwd_context.verify(plain, hashed)
+    try:
+        return bcrypt.checkpw(plain.encode("utf-8"), hashed.encode("utf-8"))
+    except (ValueError, TypeError):
+        return False
 
 
 def validate_email(email: str) -> bool:
@@ -56,9 +61,17 @@ def register_user(db: Session, email: str, password: str) -> tuple[User | None, 
         password_hash=hash_password(password),
         tier="registered",
     )
-    db.add(user)
-    db.commit()
-    db.refresh(user)
+    try:
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+    except SQLAlchemyError as exc:
+        db.rollback()
+        logger.exception("Register failed for %s", email)
+        msg = str(exc).lower()
+        if "users" in msg and ("doesn't exist" in msg or "1146" in msg):
+            return None, "Registration unavailable — database migration pending. Contact support."
+        return None, "Registration failed. Please try again later."
     return user, None
 
 
