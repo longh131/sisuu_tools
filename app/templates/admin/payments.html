@@ -4,6 +4,7 @@
 {% block content %}
 <div class="alert alert-{% if payments_live %}success{% else %}warning{% endif %}">
     当前支付：<strong>{{ payment_provider }}</strong>
+    {% if paypal_mode %}（模式：<strong>{{ paypal_mode }}</strong>{% if paypal_mode == 'live' %}，真钱收款{% else %}，Sandbox 测试{% endif %}）{% endif %}
     {% if payments_live %} — 已配置，Pricing 页可真实付款{% else %}
     — 未配置，Upgrade 走 Contact 候补；可在后台手动升级用户 tier{% endif %}
 </div>

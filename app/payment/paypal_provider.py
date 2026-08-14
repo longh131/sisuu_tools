@@ -7,8 +7,10 @@ import httpx
 
 from app.config import get_settings
 from app.payment.base import CheckoutResult, PaymentProvider, WebhookResult
+from app.utils.logger import get_logger
 
 settings = get_settings()
+logger = get_logger("paypal")
 
 PLAN_ENV_KEYS = {"pro": "paypal_plan_pro", "business": "paypal_plan_business"}
 
@@ -17,12 +19,13 @@ class PayPalPaymentProvider(PaymentProvider):
     """PayPal Billing Subscriptions — no Stripe account required."""
 
     def __init__(self) -> None:
-        self.mode = settings.paypal_mode or "sandbox"
+        self.mode = settings.paypal_mode
         self.base_url = (
             "https://api-m.paypal.com"
-            if self.mode == "live"
+            if settings.paypal_is_live
             else "https://api-m.sandbox.paypal.com"
         )
+        logger.info("PayPal provider initialized: mode=%s api=%s", self.mode, self.base_url)
 
     @property
     def name(self) -> str:

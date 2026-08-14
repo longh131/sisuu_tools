@@ -5,6 +5,7 @@ All sensitive values are loaded from .env — never hardcode secrets.
 
 from functools import lru_cache
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -61,6 +62,18 @@ class Settings(BaseSettings):
     paypal_plan_pro: str = ""
     paypal_plan_business: str = ""
     paypal_webhook_id: str = ""
+
+    @field_validator("paypal_mode", mode="before")
+    @classmethod
+    def normalize_paypal_mode(cls, v: object) -> str:
+        mode = (str(v).strip().lower() if v else "") or "sandbox"
+        if mode not in ("sandbox", "live"):
+            return "sandbox"
+        return mode
+
+    @property
+    def paypal_is_live(self) -> bool:
+        return self.paypal_mode == "live"
 
     @property
     def site_url(self) -> str:

@@ -87,6 +87,7 @@ async def admin_dashboard(request: Request) -> HTMLResponse:
         "stats": get_dashboard_stats(),
         "debug": settings.debug,
         "payment_provider": settings.payment_provider,
+        "paypal_mode": settings.paypal_mode if settings.payment_provider == "paypal" else "",
         "payments_live": get_payment_provider().is_available(),
     })
 
@@ -325,6 +326,7 @@ async def admin_payments(request: Request, db: Session = Depends(get_db)) -> HTM
         "payments": list_payments(db),
         "subscriptions": list_subscriptions(db),
         "payment_provider": settings.payment_provider,
+        "paypal_mode": settings.paypal_mode if settings.payment_provider == "paypal" else "",
         "payments_live": get_payment_provider().is_available(),
     })
 

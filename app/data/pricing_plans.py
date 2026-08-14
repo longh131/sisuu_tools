@@ -76,8 +76,8 @@ PRICING_FAQ: list[dict] = [
         "answer": "Yes. All calculators and basic AI tools are free. Free users get 3 AI generations per day. Subscribe with your email to unlock 10 daily AI uses.",
     },
     {
-        "question": "When will Pro and Business plans launch?",
-        "answer": "Pro ($19/month) and Business ($49/month) are coming soon. Click Upgrade to join the waitlist — we will notify you when payments go live. No charge until then.",
+        "question": "How do Pro and Business subscriptions work?",
+        "answer": "Pro ($19/month) and Business ($49/month) are available now. Sign in, click Upgrade, and complete checkout with PayPal. Subscriptions renew monthly; cancel anytime in your PayPal account.",
     },
     {
         "question": "Do I need a credit card to start?",
@@ -85,6 +85,6 @@ PRICING_FAQ: list[dict] = [
     },
     {
         "question": "What happens when I hit my daily AI limit?",
-        "answer": "You can subscribe with your email for more free uses, or upgrade to Pro when available. Limits reset at midnight UTC.",
+        "answer": "You can subscribe with your email for more free uses, or upgrade to Pro or Business on the Pricing page. Limits reset at midnight UTC.",
     },
 ]
