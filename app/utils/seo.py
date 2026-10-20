@@ -116,7 +116,7 @@ Sitemap: {settings.site_url}/sitemap.xml
 """
 
 
-def generate_sitemap_xml() -> str:
+def generate_sitemap_xml(db=None) -> str:
     urls: list[str] = []
     for page in STATIC_PAGES:
         urls.append(_sitemap_entry(page["loc"], page["priority"], page["changefreq"]))
@@ -124,8 +124,26 @@ def generate_sitemap_xml() -> str:
         urls.append(_sitemap_entry(f"/tools/{slug}", "0.8", "weekly"))
     for tool in SEED_TOOLS:
         urls.append(_sitemap_entry(f"/tools/{tool['slug']}", "0.8", "monthly"))
-    for post in SEED_BLOG_POSTS:
-        urls.append(_sitemap_entry(f"/blog/{post['slug']}", "0.7", "monthly"))
+    blog_slugs: list[str] = []
+    if db is not None:
+        try:
+            from app.services.blog_service import get_all_posts
+
+            blog_slugs = [p["slug"] for p in get_all_posts(db)]
+        except Exception:
+            blog_slugs = []
+    if not blog_slugs:
+        blog_slugs = [p["slug"] for p in SEED_BLOG_POSTS]
+    else:
+        from app.data.synced_blog_posts import SYNCED_BLOG_POSTS
+
+        seen = set(blog_slugs)
+        for p in SYNCED_BLOG_POSTS:
+            if p["slug"] not in seen:
+                blog_slugs.append(p["slug"])
+                seen.add(p["slug"])
+    for slug in blog_slugs:
+        urls.append(_sitemap_entry(f"/blog/{slug}", "0.7", "monthly"))
     return (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'

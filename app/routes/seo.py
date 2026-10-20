@@ -2,9 +2,11 @@
 
 from pathlib import Path
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse, PlainTextResponse, Response
+from sqlalchemy.orm import Session
 
+from app.database import get_db
 from app.utils.seo import generate_robots_txt, generate_sitemap_xml
 
 router = APIRouter(tags=["seo"])
@@ -19,9 +21,9 @@ async def robots_txt() -> str:
 
 
 @router.get("/sitemap.xml")
-async def sitemap_xml() -> Response:
+async def sitemap_xml(db: Session = Depends(get_db)) -> Response:
     """Serve dynamically generated sitemap.xml."""
-    content = generate_sitemap_xml()
+    content = generate_sitemap_xml(db)
     return Response(content=content, media_type="application/xml")
 
 
